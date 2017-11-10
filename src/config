@@ -1,3 +1,11 @@
 export DIST_NAME=VlcOS
 export DIST_VERSION=0.1
-export MODULES="base(network,vlcos)"
+export MODULES="base(network, disable-services(gui(vlcos)))"
+
+# if set will enlarge root parition prior to build by provided size in MB
+export BASE_IMAGE_ENLARGEROOT=1000
+
+# if set will resize root partition on image after build to minimum size + 
+# provided size in MB
+export BASE_IMAGE_RESIZEROOT=200
+export GUI_STARTUP_SCRIPT=/home/pi/scripts/run_vlc

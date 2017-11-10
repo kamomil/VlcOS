@@ -1,0 +1,7 @@
+#!/bin/bash
+
+(sleep 15 ; /home/pi/scripts/fullscreen) &
+xdotool mousemove 9000 9000
+%VLC_START_SCRIPT%
+    
+sleep 1

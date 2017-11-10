@@ -1,20 +1,60 @@
 #!/usr/bin/env bash
-# <Script Name>
-# <Description what this module does>
-# Written by <Author>
+# FullPageOS generation script
+# Helper script that runs in a Raspbian/others chroot to create the FullPageOS distro
+# Written by Guy Sheffer <guysoft at gmail dot com>
 # GPL V3
 ########
+set -x
+set -e
 
-# Source error handling, leave this in place
 source /common.sh
-install_cleanup_trap
 
 unpack /filesystem/home/pi /home/pi pi
-unpack /filesystem/home/root /root root
 unpack /filesystem/boot /boot
 
-echo "This is an example module, install and set up what you need here!"
-echo "$VLCOS_VAR"
+apt-get update
 
-# Unpack root at the end, so files are modified before
-unpack /filesystem/root /
+#apt-get tools
+apt-get -y --force-yes install python2.7 git screen checkinstall avahi-daemon libavahi-compat-libdnssd1 xterm
+
+apt-get install -y --force-yes xdotool
+apt-get install -y --force-yes vim expect
+
+apt-get install -y --force-yes vlc
+sudo -u pi sed -i 's@%VLC_START_SCRIPT%@/home/pi/scripts/start_vlc@g' /home/pi/scripts/run_vlc
+
+#override timezone
+if [ "$VLCOS_OVERRIDE_TIMEZONE" != "default" ]
+then
+    echo "$VLCOS_OVERRIDE_TIMEZONE" > /etc/timezone
+    dpkg-reconfigure -f noninteractive tzdata
+fi
+
+#override locale
+if [ "$VLCOS_OVERRIDE_LOCALE" != "default" ]
+then
+    sed -i '/^#.* '"$VLCOS_OVERRIDE_LOCALE"' /s/^# //' /etc/locale.gen
+    locale-gen
+    update-locale LANG="$VLCOS_OVERRIDE_LOCALE"
+fi
+
+#override password
+if [ "$VLCOS_OVERRIDE_PASSWORD" != "default" ]
+then
+    echo "pi:$VLCOS_OVERRIDE_PASSWORD" | chpasswd
+fi
+
+#echo "sudo -u pi startx /home/pi/scripts/run_onepageos &" >> /etc/rc.local
+#echo "(sleep 15 ; sudo -u pi /home/pi/scripts/fullscreen) &" >> /etc/rc.local
+
+#####################################################################
+### setup services
+
+echo "server time.nist.gov" >> /etc/ntp.conf
+echo "server ntp.ubuntu.com" >> /etc/ntp.conf
+
+rm -r /usr/sbin/policy-rc.d
+
+#cleanup
+apt-get clean
+apt-get autoremove -y

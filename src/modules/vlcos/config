@@ -1,1 +1,13 @@
-VLCOS_VAR="This is a module variable"
+###############################################################################
+#override timezone, otherwise use image timezone
+[ -n "$VLCOS_OVERRIDE_TIMEZONE" ] || VLCOS_OVERRIDE_TIMEZONE=default
+
+#override locale, otherwise use image locale
+[ -n "$VLCOS_OVERRIDE_LOCALE" ] || VLCOS_OVERRIDE_LOCALE=default
+
+#override password, otherwise use image default
+[ -n "$VLCOS_OVERRIDE_PASSWORD" ] || VLCOS_OVERRIDE_PASSWORD=default
+
+# Add GPU acceleration
+[ -n "$VLCOS_INCLUDE_ACCELERATION" ] || VLCOS_INCLUDE_ACCELERATION=yes
+

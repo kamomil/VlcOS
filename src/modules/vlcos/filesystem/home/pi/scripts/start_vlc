@@ -1,1 +1,1 @@
-vlc --fullscreen --no-mouse-events --loop --mouse-hide-timeout 1 /home/pi/psycho.mpg
+vlc -vv --fullscreen --no-mouse-events --loop --mouse-hide-timeout 1 /home/pi/psycho.mpg > /home/pi/vlc_log 2>&1
